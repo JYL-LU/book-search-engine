@@ -2,8 +2,12 @@ const express = require("express");
 const path = require("path");
 const db = require("./config/connection");
 //const routes = require('./routes');
+const apollo = require("apollo-server-express");
+// console.log(apollo);
 
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer } = apollo;
+console.log(ApolloServer);
+//const { ApolloServer } = require("apollo-server-express");
 
 const { typeDefs, resolvers } = require("./schemas");
 const { authMiddleware } = require("./utils/auth");
@@ -20,13 +24,12 @@ const app = express();
 
 // integrate our Apollo server with the express application as middleware
 server.applyMiddleware({ app });*/
-
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: authMiddleware,
+});
 async function startServer() {
-  server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: authMiddleware,
-  });
   await server.start();
   server.applyMiddleware({ app });
 }
